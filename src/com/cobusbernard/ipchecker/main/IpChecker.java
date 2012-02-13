@@ -10,6 +10,8 @@ package com.cobusbernard.ipchecker.main;
  */
 public class IpChecker {
 
+	
+	
 	public static boolean testIp(String cidrBlock, String ip) {
 		return false;
 	}
