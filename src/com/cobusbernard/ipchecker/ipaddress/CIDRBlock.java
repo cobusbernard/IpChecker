@@ -61,14 +61,19 @@ public class CIDRBlock {
 			
 			String[] splitInput = cidrBlock.split("\\/");
 			
+			if (splitInput.length < 2 || splitInput.length > 2) {
+				throw new InvalidCidrFormatException("Please enter in the format xxx.xxx.xxx.xxx/xx.");
+			}
+			
 			this.leadingBits = Byte.parseByte(splitInput[1]);
 			if (this.leadingBits < 0 || this.leadingBits > 32) {
 				throw new InvalidCidrFormatException("Leading bits must be between 0 and 32.");
 			}
 			
-			this.baseIP = determineIpAddresses(splitInput[0], splitInput[1]);
+			determineIpAddresses(splitInput[0], splitInput[1]);
 			
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			throw new InvalidCidrFormatException("Incorrectly formed CIDR. [ " + e.getMessage() + " ]");
 		}
 	}
@@ -76,31 +81,41 @@ public class CIDRBlock {
 	/**
 	 * Determines the base IP to start on one of the blocks, i.e. for /27, the blocks are 31 IPs long and can
 	 * start on 0, 32, 64 - the first IP is used to allocate the other IPs, so block would effectively be
-	 * 32 long.
-	 * 
-	 * @param givenBaseIp	the base IP given.
+	 * 32 long. Assigns the base, upper and lower IPs.
 	 * 
 	 * @return the correct BaseIp.
 	 */
-	private BaseIpAddress determineIpAddresses(String givenBaseIp, String leadingBits) 
+	private void determineIpAddresses(String givenBaseIp, String leadingBits) 
 			throws InvalidIpFormatException {
-		
-		BaseIpAddress ip = new BaseIpAddress(givenBaseIp);
 
 		int totalHosts = ((int) Math.pow(2, 32 - Integer.parseInt(leadingBits)) - 1);
-		
-		int netmask = (255 << 24) 
+
+		int netmask = ((255 << 24) 
 				+ (255 << 16)
 				+ (255 << 8)
-				+ (255) - totalHosts;
+				+ (255)) - totalHosts;
 		
-		int base = ip.getBinaryValue() & netmask;
-		
+		int base = (new BaseIpAddress(givenBaseIp)).getBinaryValue() & netmask;
 		this.baseIP = new BaseIpAddress(bitValue(base));
 		this.lowerIp = new IpAddress(bitValue(base + 1));
 		this.upperIp = new IpAddress(bitValue(base + totalHosts - 1));
+
+		//TODO: Find a better / proper way to do this.
+		//Special case for loopback - can only determine once range has been calculated.
+		if (this.containsIP(new IpAddress("127.0.0.1"))) {
+			int totalHosts2 = ((int) Math.pow(2, 32 - Integer.parseInt(leadingBits)));
+
+			int netmask2 = ((255 << 24) 
+					+ (255 << 16)
+					+ (255 << 8)
+					+ (255)) - totalHosts2;
+			
+			int base2 = (new BaseIpAddress(givenBaseIp)).getBinaryValue() & netmask2;
+			this.baseIP = new BaseIpAddress(bitValue(base2));
+			this.lowerIp = new IpAddress(bitValue(base2 + 1));
+			this.upperIp = new IpAddress(bitValue(base2 + totalHosts2 - 1));
+		}
 		
-		return ip;
 	}
 	
 	/**
@@ -130,6 +145,15 @@ public class CIDRBlock {
 	public boolean containsIP(IpAddress ip) {
 		return (ip.getBinaryValue() >= this.lowerIp.getBinaryValue() 
 				&& ip.getBinaryValue() <= this.upperIp.getBinaryValue());
+	}
+	
+	/**
+	 * Calculates the number of available host IPs.
+	 * 
+	 * @return number of available IPs.
+	 */
+	public int numberOfHosts() {
+		return this.upperIp.getBinaryValue() - this.lowerIp.getBinaryValue() + 1;
 	}
 	
 	/**

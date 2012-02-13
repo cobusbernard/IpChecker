@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+    <property name="testdir" location="test" />
+    <property name="srcdir" location="src" />
+    <property name="builddir" location="build" />
+    <property name="full-compile" value="true" />
+
+    <path id="classpath.base"/>
+  
+    <path id="classpath.test">
+	    <pathelement location="lib/junit.jar" />
+	    <pathelement location="${testdir}" />
+	    <pathelement location="${srcdir}/classes" />
+	    <path refid="classpath.base" />
+    </path>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${builddir}/classes"/>
+        <javac srcdir="${srcdir}" destdir="${builddir}/classes"/>
+    </target>
+
+    <target name="compile-test" depends="compile">
+        <mkdir dir="${builddir}/tests"/>
+        <javac srcdir="${testdir}" destdir="${builddir}/tests">
+            <classpath refid="classpath.test"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile-test">
+        <junit fork="true" printSummary="true" showOutput="true">
+            <formatter type="plain" />
+            <classpath>
+                <pathelement path="${builddir}/tests "/>
+            </classpath>
+            <test name="com.cobusbernard.ipchecker.test.IpCheckerTests" />      
+        </junit>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${builddir}/jar"/>
+        <jar destfile="${builddir}/jar/IpChecker.jar" basedir="${builddir}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="com.cobusbernard.ipchecker.main.IpChecker"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run">
+        <java jar="build/jar/IpChecker.jar" fork="true"/>
+    </target>
+</project>

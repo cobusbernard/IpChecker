@@ -44,14 +44,14 @@ public class IpAddress implements Comparable<IpAddress>{
 	 * 
 	 * @throws InvalidIpFormatException when the string could not be parsed.
 	 */
-	protected void parseInput(String ip) throws InvalidIpFormatException {
+	private void parseInput(String ip) throws InvalidIpFormatException {
 		try {
 			String[] split = ip.split("\\.");
 
-			this.address_A = validateInput(split[0]);
-			this.address_B = validateInput(split[1]);
-			this.address_C = validateInput(split[2]);
-			this.address_D = validateInput(split[3]);
+			this.address_A = validateInputRange(split[0], 0, 255);
+			this.address_B = validateInputRange(split[1], 0, 255);
+			this.address_C = validateInputRange(split[2], 0, 255);
+			this.address_D = validateInputRange(split[3], 1, 254);
 		} catch (Exception e) {
 			throw new InvalidIpFormatException("Could not parse input string. [ " + ip + " ]");
 		}
@@ -129,19 +129,6 @@ public class IpAddress implements Comparable<IpAddress>{
 		return String.format("%s.%s.%s.%s", this.address_A, this.address_B, this.address_C, 
 			this.address_D);
 	}	
-	
-	/**
-	 * Will validate that the input is a short and that it falls within 1 - 254;
-	 * 
-	 * @param input value to evaluate.
-	 * 
-	 * @return the short value of the input.
-	 * 
-	 * @throws when the input does not validate to a number between 1 and 254.
-	 */
-	protected short validateInput(String input) throws InvalidIpFormatException {
-		return validateInputRange(input, 1, 254);
-	}
 	
 	/**
 	 * Compares 2 IpAddresses with each other.
