@@ -1,0 +1,8 @@
+Todo:
+=====
+
+1. Read in CIDR and IP.
+2. Process CIDR block into IP range.
+3. Test if IP falls within range.
+4. Read up on CIDR for any edge cases, implement additional unit tests if found.
+5. Quick Ant build script to allow easy compilation into jar.
