@@ -7,8 +7,9 @@ import org.junit.Test;
 
 import com.cobusbernard.ipchecker.exception.InvalidCidrFormatException;
 import com.cobusbernard.ipchecker.exception.InvalidIpFormatException;
-import com.cobusbernard.ipchecker.main.CIDRBlock;
-import com.cobusbernard.ipchecker.main.IpAddress;
+import com.cobusbernard.ipchecker.ipaddress.BaseIpAddress;
+import com.cobusbernard.ipchecker.ipaddress.CIDRBlock;
+import com.cobusbernard.ipchecker.ipaddress.IpAddress;
 import com.cobusbernard.ipchecker.main.IpChecker;
 
 public class IpCheckerTests {
@@ -48,7 +49,7 @@ public class IpCheckerTests {
 		}
 		
 		//Test BaseIp.
-		IpAddress baseIp = cidrblock.getBaseIP();
+		BaseIpAddress baseIp = cidrblock.getBaseIP();
 		Assert.assertEquals(198, baseIp.getAddress_A());
 		Assert.assertEquals(51, baseIp.getAddress_B());
 		Assert.assertEquals(100, baseIp.getAddress_C());
@@ -56,6 +57,20 @@ public class IpCheckerTests {
 		
 		//Test leading bits.
 		Assert.assertEquals(22, cidrblock.getLeadingBits());
+		
+		//Test BottomIP.
+		IpAddress bottomIp = cidrblock.getBottomIp();
+		Assert.assertEquals(198, bottomIp.getAddress_A());
+		Assert.assertEquals(51, bottomIp.getAddress_B());
+		Assert.assertEquals(100, bottomIp.getAddress_C());
+		Assert.assertEquals(1, bottomIp.getAddress_D());
+		
+		//Test UpperIP.
+		IpAddress upperIp = cidrblock.getBottomIp();
+		Assert.assertEquals(198, upperIp.getAddress_A());
+		Assert.assertEquals(51, upperIp.getAddress_B());
+		Assert.assertEquals(103, upperIp.getAddress_C());
+		Assert.assertEquals(254, upperIp.getAddress_D());
 	}
 	
 	@Test
