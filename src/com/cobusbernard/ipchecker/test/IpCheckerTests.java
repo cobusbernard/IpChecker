@@ -10,7 +10,6 @@ import com.cobusbernard.ipchecker.exception.InvalidIpFormatException;
 import com.cobusbernard.ipchecker.ipaddress.BaseIpAddress;
 import com.cobusbernard.ipchecker.ipaddress.CIDRBlock;
 import com.cobusbernard.ipchecker.ipaddress.IpAddress;
-import com.cobusbernard.ipchecker.main.IpChecker;
 
 public class IpCheckerTests {
 
@@ -37,6 +36,13 @@ public class IpCheckerTests {
 		} catch (InvalidIpFormatException e) {
 			Assert.assertEquals(true, true);
 		}
+
+		try {
+			new IpAddress("200.51.100.0");
+			Assert.assertEquals("Invalid ip address.", false, true);
+		} catch (InvalidIpFormatException e) {
+			Assert.assertEquals(true, true);
+		}
 	}
 	
 	@Test
@@ -59,14 +65,14 @@ public class IpCheckerTests {
 		Assert.assertEquals(22, cidrblock.getLeadingBits());
 		
 		//Test BottomIP.
-		IpAddress bottomIp = cidrblock.getBottomIp();
+		IpAddress bottomIp = cidrblock.getLowerIp();
 		Assert.assertEquals(198, bottomIp.getAddress_A());
 		Assert.assertEquals(51, bottomIp.getAddress_B());
 		Assert.assertEquals(100, bottomIp.getAddress_C());
 		Assert.assertEquals(1, bottomIp.getAddress_D());
-		
+
 		//Test UpperIP.
-		IpAddress upperIp = cidrblock.getBottomIp();
+		IpAddress upperIp = cidrblock.getUpperIp();
 		Assert.assertEquals(198, upperIp.getAddress_A());
 		Assert.assertEquals(51, upperIp.getAddress_B());
 		Assert.assertEquals(103, upperIp.getAddress_C());
@@ -85,10 +91,35 @@ public class IpCheckerTests {
 	
 	@Test
 	public void testApplication() {
+		
 		//* Supplied test cases
-		Assert.assertEquals(true, IpChecker.testIp("198.51.100.0/22", "198.51.100.5"));
-		Assert.assertEquals(true, IpChecker.testIp("198.51.10.4/30 ", "198.51.10.5"));
-		Assert.assertEquals(false, IpChecker.testIp("198.51.10.4/30", "198.51.10.9"));
+		try {
+			CIDRBlock block1 = new CIDRBlock("198.51.100.0/22");
+			Assert.assertEquals(true, block1.containsIP(new IpAddress("198.51.100.5")));
+		} catch (InvalidCidrFormatException e) {
+			fail("Could not create CIDR block.");
+		} catch (InvalidIpFormatException e) {
+			fail("Could not create Ip Address to compare.");
+		}
+		
+		try {
+			CIDRBlock block1 = new CIDRBlock("198.51.10.4/30");
+			Assert.assertEquals(true, block1.containsIP(new IpAddress("198.51.10.5")));
+		} catch (InvalidCidrFormatException e) {
+			fail("Could not create CIDR block.");
+		} catch (InvalidIpFormatException e) {
+			fail("Could not create Ip Address to compare.");
+		}
+		
+		try {
+			CIDRBlock block1 = new CIDRBlock("198.51.10.4/30");
+			Assert.assertEquals(false, block1.containsIP(new IpAddress("198.51.10.9")));
+		} catch (InvalidCidrFormatException e) {
+			fail("Could not create CIDR block.");
+		} catch (InvalidIpFormatException e) {
+			fail("Could not create Ip Address to compare.");
+		}
+		
 	}
 
 }

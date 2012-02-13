@@ -3,6 +3,7 @@
  */
 package com.cobusbernard.ipchecker.main;
 
+
 /**
  * Command line app to check if an IP falls within the range of a CIDR block.
  * 
@@ -10,12 +11,6 @@ package com.cobusbernard.ipchecker.main;
  */
 public class IpChecker {
 
-	
-	
-	public static boolean testIp(String cidrBlock, String ip) {
-		return false;
-	}
-	
 	/**
 	 * @param args
 	 */

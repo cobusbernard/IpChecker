@@ -9,7 +9,8 @@ import com.cobusbernard.ipchecker.exception.InvalidIpFormatException;
  * 
  * @author Cobus Bernard
  */
-public class BaseIpAddress extends AbstractIpAddress {
+public class BaseIpAddress extends IpAddress {
+	
 	
 	/**
 	 * Default constructor.
@@ -23,16 +24,17 @@ public class BaseIpAddress extends AbstractIpAddress {
 	}
 	
 	/**
-	 * Will validate that the input is a short and that it falls within 0 - 254;
+	 * Will validate that the input is a short and that it falls within 1 - 254;
 	 * 
 	 * @param input value to evaluate.
 	 * 
 	 * @return the short value of the input.
 	 * 
-	 * @throws when the input does not validate to a number between 0 and 254.
+	 * @throws when the input does not validate to a number between 1 and 254.
 	 */
+	@Override
 	protected short validateInput(String input) throws InvalidIpFormatException {
 		return validateInputRange(input, 0, 254);
 	}
-
+	
 }
