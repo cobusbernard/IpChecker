@@ -1,56 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project name="IpChecker" default="run" basedir=".">
 
-    <property name="testdir" location="test" />
-    <property name="srcdir" location="src" />
-    <property name="builddir" location="build" />
-    <property name="full-compile" value="true" />
+    <property name="src.dir" value="src" />
+    <property name="test.dir" value="test" />
+    <property name="build.dir" value="build" />
+    <property name="test.report.dir" value="build" />
+    <property name="jar.dir" value="${build.dir}/jar" />
+    <property name="jar.name" value="IpChecker.jar" />
 
-    <path id="classpath.base"/>
-  
-    <path id="classpath.test">
-	    <pathelement location="lib/junit.jar" />
-	    <pathelement location="${testdir}" />
-	    <pathelement location="${srcdir}/classes" />
-	    <path refid="classpath.base" />
+    <!-- Define the classpath which includes the junit.jar and the classes after compiling-->
+    <path id="junit.class.path">
+ 	<pathelement location="lib/junit.jar" />
+	<pathelement location="${build.dir}" />
     </path>
 
-    <target name="clean">
-        <delete dir="build"/>
+    <target name="clean" description="Cleans out the build directory.">
+        <delete dir="${build.dir}"/>
     </target>
 
-    <target name="compile" depends="clean">
-        <mkdir dir="${builddir}/classes"/>
-        <javac srcdir="${srcdir}" destdir="${builddir}/classes"/>
-    </target>
-
-    <target name="compile-test" depends="compile">
-        <mkdir dir="${builddir}/tests"/>
-        <javac srcdir="${testdir}" destdir="${builddir}/tests">
-            <classpath refid="classpath.test"/>
+    <target name="compile" depends="clean" description="Compiles the project, no tests are run.">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}/classes">
+            <classpath refid="junit.class.path" />
+        </javac>
+        <javac srcdir="${test.dir}" destdir="${build.dir}/classes">
+            <classpath refid="junit.class.path" />
         </javac>
     </target>
 
-    <target name="test" depends="compile-test">
-        <junit fork="true" printSummary="true" showOutput="true">
-            <formatter type="plain" />
-            <classpath>
-                <pathelement path="${builddir}/tests "/>
-            </classpath>
-            <test name="com.cobusbernard.ipchecker.test.IpCheckerTests" />      
+    <target name="junit" depends="compile">
+  	<junit printsummary="on" fork="true" haltonfailure="yes">
+	    <classpath refid="junit.class.path" />
+	    <formatter type="xml" />
+	    <batchtest todir="${test.dir}">
+		<fileset dir="${test.dir}">
+		    <include name="**/*Test*.java" />
+		</fileset>
+	    </batchtest>
         </junit>
     </target>
 
-    <target name="jar" depends="compile">
-        <mkdir dir="${builddir}/jar"/>
-        <jar destfile="${builddir}/jar/IpChecker.jar" basedir="${builddir}/classes">
+    <target name="jar" depends="compile" description="Compiles the project, runs the tests and if they succeed, package into a jar.">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/${jar.name}" basedir="${build.dir}/classes">
             <manifest>
                 <attribute name="Main-Class" value="com.cobusbernard.ipchecker.main.IpChecker"/>
             </manifest>
         </jar>
     </target>
 
-    <target name="run">
-        <java jar="build/jar/IpChecker.jar" fork="true"/>
+    <target name="run" depends="" description="Packages the project in a jar and runs it.">
+        <java jar="${jar.dir}/${jar.name}" fork="true"/>
     </target>
+
 </project>
