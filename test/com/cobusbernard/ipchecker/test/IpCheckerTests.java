@@ -3,8 +3,6 @@ package com.cobusbernard.ipchecker.test;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 import com.cobusbernard.ipchecker.exception.InvalidCidrFormatException;
 import com.cobusbernard.ipchecker.exception.InvalidIpFormatException;
@@ -12,8 +10,11 @@ import com.cobusbernard.ipchecker.ipaddress.BaseIpAddress;
 import com.cobusbernard.ipchecker.ipaddress.CIDRBlock;
 import com.cobusbernard.ipchecker.ipaddress.IpAddress;
 
-
-@RunWith(Suite.class)
+/**
+ * Tests to ensure that the IpChecker program functions correctly.
+ * 
+ * @author Cobus Bernard
+ */
 public class IpCheckerTests {
 
 	@Test

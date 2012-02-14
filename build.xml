@@ -1,5 +1,7 @@
 <project name="IpChecker" default="run" basedir=".">
 
+
+
     <property name="src.dir" value="src" />
     <property name="test.dir" value="test" />
     <property name="build.dir" value="build" />
@@ -10,7 +12,8 @@
     <!-- Define the classpath which includes the junit.jar and the classes after compiling-->
     <path id="junit.class.path">
  	<pathelement location="lib/junit.jar" />
-	<pathelement location="${build.dir}" />
+ 	<pathelement location="lib/hamcrest.jar" />
+	<pathelement location="${build.dir}/classes" />
     </path>
 
     <target name="clean" description="Cleans out the build directory.">
@@ -19,11 +22,11 @@
 
     <target name="compile" depends="clean" description="Compiles the project, no tests are run.">
         <mkdir dir="${build.dir}/classes"/>
-        <javac srcdir="${src.dir}" destdir="${build.dir}/classes">
+        <javac srcdir="${src.dir}" destdir="${build.dir}/classes" includeantruntime="false">
             <classpath refid="junit.class.path" />
         </javac>
-        <javac srcdir="${test.dir}" destdir="${build.dir}/classes">
-            <classpath refid="junit.class.path" />
+        <javac srcdir="${test.dir}" destdir="${build.dir}/classes" includeantruntime="false">
+	    <classpath refid="junit.class.path" />
         </javac>
     </target>
 
