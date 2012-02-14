@@ -1,12 +1,9 @@
 <project name="IpChecker" default="run" basedir=".">
-
-
-
     <property name="src.dir" value="src" />
     <property name="test.dir" value="test" />
     <property name="build.dir" value="build" />
     <property name="test.report.dir" value="build" />
-    <property name="jar.dir" value="${build.dir}/jar" />
+    <property name="jar.dir" value="dist/jar" />
     <property name="jar.name" value="IpChecker.jar" />
 
     <!-- Define the classpath which includes the junit.jar and the classes after compiling-->
@@ -18,6 +15,7 @@
 
     <target name="clean" description="Cleans out the build directory.">
         <delete dir="${build.dir}"/>
+        <delete dir="${jar.dir}"/>
     </target>
 
     <target name="compile" depends="clean" description="Compiles the project, no tests are run.">
@@ -44,15 +42,22 @@
 
     <target name="jar" depends="test" description="Compiles the project, runs the tests and if they succeed, package into a jar.">
         <mkdir dir="${jar.dir}"/>
+        <delete verbose="true">
+            <fileset dir="${build.dir}/classes" includes="**/*Test*" />
+        </delete>
         <jar destfile="${jar.dir}/${jar.name}" basedir="${build.dir}/classes">
             <manifest>
                 <attribute name="Main-Class" value="com.cobusbernard.ipchecker.main.IpChecker"/>
             </manifest>
         </jar>
-    </target>
-
-    <target name="run" depends="jar" description="Packages the project in a jar and runs it.">
-        <java jar="${jar.dir}/${jar.name}" fork="true"/>
+        <echo>
+          <![CDATA[
+          <=========================================
+          Please run the following from the console:
+          java -jar ${jar.dir}/${jar.name}
+          =========================================>
+          ]]>
+        </echo>
     </target>
 
 </project>
