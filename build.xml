@@ -54,7 +54,7 @@
           <![CDATA[
           <=========================================
           Please run the following from the console:
-          java -jar ${jar.dir}/${jar.name}
+          java -jar ${jar.dir}/${jar.name} <CIDR> <IP>
           =========================================>
           ]]>
         </echo>
