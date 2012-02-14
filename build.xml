@@ -1,4 +1,4 @@
-<project name="IpChecker" default="run" basedir=".">
+<project name="IpChecker" default="jar" basedir=".">
     <property name="src.dir" value="src" />
     <property name="test.dir" value="test" />
     <property name="build.dir" value="build" />
