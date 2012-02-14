@@ -27,7 +27,7 @@
         </javac>
     </target>
 
-    <target name="junit" depends="compile">
+    <target name="test" depends="compile">
   	<junit printsummary="on" fork="true" haltonfailure="yes">
 	    <classpath refid="junit.class.path" />
 	    <formatter type="xml" />
@@ -39,7 +39,7 @@
         </junit>
     </target>
 
-    <target name="jar" depends="compile" description="Compiles the project, runs the tests and if they succeed, package into a jar.">
+    <target name="jar" depends="test" description="Compiles the project, runs the tests and if they succeed, package into a jar.">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${jar.name}" basedir="${build.dir}/classes">
             <manifest>
@@ -48,7 +48,7 @@
         </jar>
     </target>
 
-    <target name="run" depends="" description="Packages the project in a jar and runs it.">
+    <target name="run" depends="jar" description="Packages the project in a jar and runs it.">
         <java jar="${jar.dir}/${jar.name}" fork="true"/>
     </target>
 
