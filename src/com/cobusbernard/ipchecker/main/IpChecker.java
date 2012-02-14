@@ -25,8 +25,6 @@ public class IpChecker {
 	 */
 	public static void main(String[] args) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.print("Please enter the CIDR block: ");
-
 		CIDRBlock block = null;
 		
 		while (block == null)
